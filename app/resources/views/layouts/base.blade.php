@@ -56,7 +56,7 @@
                     <li class="nav__item">
                         <details class="nav__group">
                             <summary class="nav__summary">
-                                <span class="nav__icon" aria-hidden="true">👨‍�</span>
+                                <span class="nav__icon" aria-hidden="true">👨‍</span>
                                 <span>ADMIN</span>
                                 <span class="chev" aria-hidden="true"></span>
                             </summary>
