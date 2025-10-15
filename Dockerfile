@@ -17,5 +17,5 @@ WORKDIR /var/www/html
 # Porta usada pelo "php artisan serve"
 EXPOSE 8000
 
-# Comando padrão: rodar o servidor embutido do Laravel
-CMD ["bash", "-lc", "php artisan serve --host=0.0.0.0 --port=8000"]
+# Comando padrão: instalar dependências e rodar o servidor
+CMD ["bash", "-c", "cd /var/www/html/app && composer install --no-interaction && php artisan serve --host=0.0.0.0 --port=8000"]
