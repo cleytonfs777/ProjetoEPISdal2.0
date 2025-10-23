@@ -1,9 +1,40 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
 Route::get('/', function () {
-    return view('welcome');
+    $postgrad_choices = DB::table('postgrad_ref')->pluck('label', 'code')->toArray();
+    $choices_sitfunc = DB::table('sitfunc_ref')->pluck('label', 'code')->toArray();
+    
+    // Buscar primeiro usuário do banco (para teste) - você pode trocar por auth depois
+    $user = DB::table('usuarios')->first();
+    
+    // Se não houver usuário, criar um objeto vazio
+    if (!$user) {
+        $user = (object)[
+            'numbm' => '',
+            'nome' => 'Usuário Teste',
+            'nome_completo' => '',
+            'postgrad_code' => '',
+            'date_include' => '',
+            'tempo_servico' => '0 anos',
+            'status_code' => '',
+            'sitfunc_code' => '',
+            'sexo_code' => 'M',
+            'cargo_code' => 'U',
+            'emailfunc' => '',
+            'gto' => '',
+            'ativ_esp' => '',
+            'list_ativ_esp' => '',
+            'cob' => '',
+            'unid_princ' => '',
+            'unid_lot' => '',
+            'priorit' => 'B',
+        ];
+    }
+    
+    return view('welcome', compact('user', 'postgrad_choices', 'choices_sitfunc'));
 })->name('home');
 
 Route::get('/ciurb', function () {

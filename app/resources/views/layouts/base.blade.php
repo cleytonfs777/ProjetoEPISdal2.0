@@ -10,6 +10,55 @@
     <link rel="preload" href="{{ asset('css/app.css') }}" as="style" onload="this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="{{ asset('css/app.css') }}"></noscript>
 
+    <style>
+        .topbar__actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.3rem;
+            padding: 0.5rem 1rem;
+        }
+        
+        .user-info__name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #2c3e50;
+        }
+        
+        .user-info__role {
+            display: flex;
+            align-items: center;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .badge-admin {
+            background: #dc3545;
+            color: white;
+            box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+        }
+        
+        .badge-user {
+            background: #007bff;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+        }
+    </style>
+
     {{-- Espaço para CSS extra de páginas --}}
     @stack('styles')
 
@@ -131,25 +180,18 @@
             </div>
 
             <div class="topbar__actions">
-                @auth
-                    <div class="user">
-                        <button class="user__btn" id="userMenuBtn" aria-haspopup="menu" aria-expanded="false">
-                            <span class="user__name">{{ Auth::user()->name }}</span>
-                            <span class="chev chev--sm" aria-hidden="true"></span>
-                        </button>
-                        <div class="user__menu" id="userMenu" role="menu" aria-labelledby="userMenuBtn" hidden>
-                            <div class="user__meta">
-                                <strong>{{ Auth::user()->name }}</strong>
-                                {{-- <span>{{ Auth::user()->cargo?->label() }}</span> --}}
-                            </div>
-                            <hr class="sep">
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="user__logout" role="menuitem">Sair</button>
-                            </form>
+                @if(isset($user) && $user->nome ?? false)
+                    <div class="user-info">
+                        <div class="user-info__name">{{ $user->nome ?? 'Usuário' }}</div>
+                        <div class="user-info__role">
+                            @if(($user->cargo_code ?? 'U') === 'A')
+                                <span class="badge badge-admin">Administrador</span>
+                            @else
+                                <span class="badge badge-user">Usuário</span>
+                            @endif
                         </div>
                     </div>
-                @endauth
+                @endif
             </div>
         </header>
 

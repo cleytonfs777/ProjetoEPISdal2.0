@@ -23,24 +23,75 @@
         border-bottom: 3px solid #28a745;
     }
     
+    /* Força o sistema de grid Bootstrap */
+    .row {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        margin-right: -12px;
+        margin-left: -12px;
+    }
+    
+    .row > * {
+        flex-shrink: 0;
+        width: 100%;
+        max-width: 100%;
+        padding-right: 12px;
+        padding-left: 12px;
+    }
+    
+    @media (min-width: 768px) {
+        .col-md-6 {
+            flex: 0 0 auto !important;
+            width: 50% !important;
+        }
+    }
+    
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+    }
+    
     .form-label {
-        font-weight: 500;
+        font-weight: 600;
         color: #28a745;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
+        margin-bottom: 0;
+        font-size: 0.875rem;
+        text-transform: capitalize;
     }
     
     .form-control, .form-select {
         border: 1px solid #dee2e6;
         border-radius: 6px;
-        padding: 0.625rem 0.875rem;
-        font-size: 0.9rem;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
         transition: all 0.3s ease;
+        width: 100%;
+        background-color: #fff;
+        box-sizing: border-box;
+    }
+    
+    .input-group {
+        display: flex;
+        width: 100%;
+    }
+    
+    .input-group .form-select,
+    .input-group .form-control {
+        flex: 1;
     }
     
     .form-control:focus, .form-select:focus {
         border-color: #28a745;
         box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.15);
+        outline: none;
+    }
+    
+    .form-control:disabled,
+    .form-control:read-only {
+        background-color: #f8f9fa;
+        cursor: not-allowed;
     }
     
     .tags-container {
@@ -174,109 +225,132 @@
 <div class="container-fluid px-4 py-3">
     
     {{-- Seção: Dados do Militar --}}
+        {{-- Seção: Dados do Militar --}}
     <div class="form-section">
         <h2 class="section-title">Dados do Militar</h2>
         
         <div class="row g-3">
-            <div class="col-md-4">
-                <label for="numbm" class="form-label">Nº</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    id="numbm"
-                    name="numbm"
-                    maxlength="9"
-                    value="{{ $user->numbm ?? '' }}"
-                    placeholder="Digite apenas os números"
-                />
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="numbm" class="form-label">Nº</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="numbm"
+                        name="numbm"
+                        maxlength="9"
+                        value="{{ $user->numbm ?? '' }}"
+                        placeholder="Digite apenas os números"
+                    />
+                </div>
             </div>
             
-            <div class="col-md-4">
-                <label for="namebm" class="form-label">Nome Completo</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    id="namebm"
-                    name="namebm"
-                    value="{{ $user->nome_completo ?? '' }}"
-                />
-            </div>
-            
-            <div class="col-md-4">
-                <label for="postgradbm" class="form-label">Posto/Graduação</label>
-                <select class="form-select" id="postgradbm" name="postgradbm">
-                    <option selected disabled>Escolha o Posto/Grad</option>
-                    @foreach($postgrad_choices ?? [] as $key => $value)
-                    <option value="{{ $key }}" {{ ($user->postgrad ?? '') == $key ? 'selected' : '' }}>{{ $value }}</option>
-                    @endforeach
-                </select>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="namebm" class="form-label">Nome Completo</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="namebm"
+                        name="namebm"
+                        value="{{ $user->nome_completo ?? '' }}"
+                    />
+                </div>
             </div>
         </div>
         
         <div class="row g-3 mt-2">
-            <div class="col-md-4">
-                <label for="firstinc" class="form-label">Data 1ª Inclusão</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    id="firstinc"
-                    name="firstinc"
-                    value="{{ $user->date_include ?? '' }}"
-                    readonly
-                />
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="postgradbm" class="form-label">Posto/Graduação</label>
+                    <select class="form-select" id="postgradbm" name="postgradbm">
+                        <option selected disabled>Escolha o Posto/Grad</option>
+                        @foreach($postgrad_choices ?? [] as $key => $value)
+                        <option value="{{ $key }}" {{ ($user->postgrad ?? '') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
             
-            <div class="col-md-4">
-                <label for="tempserv" class="form-label">Tempo de Serviço</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    id="tempserv"
-                    name="tempserv"
-                    value="{{ $user->tempo_servico ?? '0 anos' }}"
-                    readonly
-                />
-            </div>
-            
-            <div class="col-md-4">
-                <label for="statusativ" class="form-label">Status</label>
-                <select class="form-select" id="statusativ" name="statusativ">
-                    <option selected disabled>Escolha o Status</option>
-                    <option value="A" {{ ($user->status ?? '') == 'A' ? 'selected' : '' }}>Ativo</option>
-                    <option value="I" {{ ($user->status ?? '') == 'I' ? 'selected' : '' }}>Inativo</option>
-                </select>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="firstinc" class="form-label">Data 1ª Inclusão</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="firstinc"
+                        name="firstinc"
+                        value="{{ $user->date_include ?? '' }}"
+                        readonly
+                    />
+                </div>
             </div>
         </div>
         
         <div class="row g-3 mt-2">
-            <div class="col-md-4">
-                <label for="sitfunc" class="form-label">Situação Funcional</label>
-                <select class="form-select" id="sitfunc" name="sitfunc">
-                    <option>Escolha a Sit. Func.</option>
-                    @foreach($choices_sitfunc ?? [] as $key => $value)
-                    <option value="{{ $key }}" {{ ($user->sitfunc ?? '') == $key ? 'selected' : '' }}>{{ $value }}</option>
-                    @endforeach
-                </select>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="tempserv" class="form-label">Tempo de Serviço</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="tempserv"
+                        name="tempserv"
+                        value="{{ $user->tempo_servico ?? '0 anos' }}"
+                        readonly
+                    />
+                </div>
             </div>
             
-            <div class="col-md-4">
-                <label for="sexo" class="form-label">Sexo</label>
-                <select class="form-select" id="sexo" name="sexo">
-                    <option value="M" {{ ($user->sexo ?? 'M') == 'M' ? 'selected' : '' }}>Masculino</option>
-                    <option value="F" {{ ($user->sexo ?? '') == 'F' ? 'selected' : '' }}>Feminino</option>
-                </select>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="statusativ" class="form-label">Status</label>
+                    <select class="form-select" id="statusativ" name="statusativ">
+                        <option selected disabled>Escolha o Status</option>
+                        <option value="A" {{ ($user->status ?? '') == 'A' ? 'selected' : '' }}>Ativo</option>
+                        <option value="I" {{ ($user->status ?? '') == 'I' ? 'selected' : '' }}>Inativo</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-3 mt-2">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="sitfunc" class="form-label">Situação Funcional</label>
+                    <select class="form-select" id="sitfunc" name="sitfunc">
+                        <option>Escolha a Sit. Func.</option>
+                        @foreach($choices_sitfunc ?? [] as $key => $value)
+                        <option value="{{ $key }}" {{ ($user->sitfunc ?? '') == $key ? 'selected' : '' }}>{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
             
-            <div class="col-md-4">
-                <label for="emailfunc" class="form-label">Email Funcional</label>
-                <input
-                    type="email"
-                    class="form-control"
-                    id="emailfunc"
-                    name="emailfunc"
-                    value="{{ $user->emailfunc ?? '' }}"
-                    placeholder="exemplo@bombeiros.mg.gov.br"
-                />
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="sexo" class="form-label">Sexo</label>
+                    <select class="form-select" id="sexo" name="sexo">
+                        <option value="M" {{ ($user->sexo ?? 'M') == 'M' ? 'selected' : '' }}>Masculino</option>
+                        <option value="F" {{ ($user->sexo ?? '') == 'F' ? 'selected' : '' }}>Feminino</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-3 mt-2">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="emailfunc" class="form-label">Email Funcional</label>
+                    <input
+                        type="email"
+                        class="form-control"
+                        id="emailfunc"
+                        name="emailfunc"
+                        value="{{ $user->emailfunc ?? '' }}"
+                        placeholder="exemplo@bombeiros.mg.gov.br"
+                    />
+                </div>
             </div>
         </div>
     </div>
@@ -288,111 +362,126 @@
         <div class="row g-3">
             {{-- GTO --}}
             <div class="col-md-6">
-                <input type="hidden" id="gtos_own" name="gtos_own" value="{{ $user->gto ?? '' }}">
-                <label for="compgto" class="form-label">GTO - Grupo Tático Operacional</label>
-                <select class="form-select" id="compgto" name="compgto">
-                    <option value="">Selecione um GTO</option>
-                    <option value="Atendimento a Tentativa de Suicídio">Atendimento a Tentativa de Suicídio</option>
-                    <option value="Atendimento Pré-Hospitalar">Atendimento Pré-Hospitalar</option>
-                    <option value="Busca e Resgate em Estruturas Colapsadas">Busca e Resgate em Estruturas Colapsadas</option>
-                    <option value="Busca, Resgate e Salvamento com Cães">Busca, Resgate e Salvamento com Cães</option>
-                    <option value="Classificação Internacional">Classificação Internacional</option>
-                    <option value="Incêndio Florestal">Incêndio Florestal</option>
-                    <option value="Incêndio Urbano">Incêndio Urbano</option>
-                    <option value="Investigação de Incêndio">Investigação de Incêndio</option>
-                    <option value="Mergulho Autônomo / Salvamento Aquático">Mergulho Autônomo / Salvamento Aquático</option>
-                    <option value="Movimentos de Massas, Enchentes e Inundações">Movimentos de Massas, Enchentes e Inundações</option>
-                    <option value="Produtos Perigosos">Produtos Perigosos</option>
-                    <option value="Proteção e Defesa Civil">Proteção e Defesa Civil</option>
-                    <option value="Salvamento em Altura">Salvamento em Altura</option>
-                    <option value="Salvamento Terrestre">Salvamento Terrestre</option>
-                    <option value="Salvamento Veicular">Salvamento Veicular</option>
-                </select>
-                <div class="tags-container" id="tags-input-gto"></div>
+                <div class="form-group">
+                    <input type="hidden" id="gtos_own" name="gtos_own" value="{{ $user->gto ?? '' }}">
+                    <label for="compgto" class="form-label">GTO - Grupo Tático Operacional</label>
+                    <div class="form-check mb-3" style="height:1.4rem;">
+                    </div>
+                    <select class="form-select" id="compgto" name="compgto">
+                        <option value="">Selecione um GTO</option>
+                        <option value="Atendimento a Tentativa de Suicídio">Atendimento a Tentativa de Suicídio</option>
+                        <option value="Atendimento Pré-Hospitalar">Atendimento Pré-Hospitalar</option>
+                        <option value="Busca e Resgate em Estruturas Colapsadas">Busca e Resgate em Estruturas Colapsadas</option>
+                        <option value="Busca, Resgate e Salvamento com Cães">Busca, Resgate e Salvamento com Cães</option>
+                        <option value="Classificação Internacional">Classificação Internacional</option>
+                        <option value="Incêndio Florestal">Incêndio Florestal</option>
+                        <option value="Incêndio Urbano">Incêndio Urbano</option>
+                        <option value="Investigação de Incêndio">Investigação de Incêndio</option>
+                        <option value="Mergulho Autônomo / Salvamento Aquático">Mergulho Autônomo / Salvamento Aquático</option>
+                        <option value="Movimentos de Massas, Enchentes e Inundações">Movimentos de Massas, Enchentes e Inundações</option>
+                        <option value="Produtos Perigosos">Produtos Perigosos</option>
+                        <option value="Proteção e Defesa Civil">Proteção e Defesa Civil</option>
+                        <option value="Salvamento em Altura">Salvamento em Altura</option>
+                        <option value="Salvamento Terrestre">Salvamento Terrestre</option>
+                        <option value="Salvamento Veicular">Salvamento Veicular</option>
+                    </select>
+                    <div class="tags-container" id="tags-input-gto"></div>
+                </div>
             </div>
             
             {{-- Atividade Especializada --}}
             <div class="col-md-6">
-                <label class="form-label">Atividade Especializada</label>
-                
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="atividadeEspecializadaCheckbox" 
-                           {{ ($user->ativ_esp ?? '') == 'S' ? 'checked' : '' }}>
-                    <label class="checkbox-label" for="atividadeEspecializadaCheckbox">
-                        Exerce atividade especializada?
-                    </label>
+                <div class="form-group">
+                    <label class="form-label">Atividade Especializada</label>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="atividadeEspecializadaCheckbox" 
+                               {{ ($user->ativ_esp ?? '') == 'S' ? 'checked' : '' }}>
+                        <label class="checkbox-label" for="atividadeEspecializadaCheckbox">
+                            Exerce atividade especializada?
+                        </label>
+                    </div>
+                    
+                    <div class="input-group mb-2">
+                        <select class="form-select" id="atividadeSelect" disabled>
+                            <option value="">Selecione uma Atividade</option>
+                            <option value="Núcleo de Atenção e Resposta às Chuvas">Núcleo de Atenção e Resposta às Chuvas</option>
+                            <option value="Núcleo de Incêndio Florestal">Núcleo de Incêndio Florestal</option>
+                            <option value="Busca e Salvamento com Cães">Busca e Salvamento com Cães</option>
+                            <option value="Perito de Incêndio e Explosão">Perito de Incêndio e Explosão</option>
+                            <option value="Inspetor de Incêndio">Inspetor de Incêndio</option>
+                            <option value="Motorresgate">Motorresgate</option>
+                        </select>
+                        <input type="text" class="form-control" id="docDesignInput" placeholder="Doc de Designação" disabled>
+                        <button class="btn-add-tag" type="button" id="addAtividadeBtn" disabled>+</button>
+                    </div>
+                    
+                    <div class="tags-container" id="tags-atividade"></div>
+                    <input type="hidden" id="exp_own" name="exp_own" value="">
                 </div>
-                
-                <div class="input-group mb-2">
-                    <select class="form-select" id="atividadeSelect" disabled>
-                        <option value="">Selecione uma Atividade</option>
-                        <option value="Núcleo de Atenção e Resposta às Chuvas">Núcleo de Atenção e Resposta às Chuvas</option>
-                        <option value="Núcleo de Incêndio Florestal">Núcleo de Incêndio Florestal</option>
-                        <option value="Busca e Salvamento com Cães">Busca e Salvamento com Cães</option>
-                        <option value="Perito de Incêndio e Explosão">Perito de Incêndio e Explosão</option>
-                        <option value="Inspetor de Incêndio">Inspetor de Incêndio</option>
-                        <option value="Motorresgate">Motorresgate</option>
-                    </select>
-                    <input type="text" class="form-control" id="docDesignInput" placeholder="Doc de Designação" disabled>
-                    <button class="btn-add-tag" type="button" id="addAtividadeBtn" disabled>+</button>
-                </div>
-                
-                <div class="tags-container" id="tags-atividade"></div>
-                <input type="hidden" id="exp_own" name="exp_own" value="">
             </div>
         </div>
     </div>
     
     {{-- Seção: Unidade de Lotação --}}
+        {{-- Seção: Unidade de Lotação --}}
     <div class="form-section">
         <h2 class="section-title">Unidade de Lotação</h2>
         
         <div class="row g-3">
-            <div class="col-md-4">
-                <label for="cob" class="form-label">COB</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    id="cob"
-                    name="cob"
-                    value="{{ $user->cob ?? '' }}"
-                    readonly
-                />
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="cob" class="form-label">COB</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="cob"
+                        name="cob"
+                        value="{{ $user->cob ?? '' }}"
+                        readonly
+                    />
+                </div>
             </div>
             
-            <div class="col-md-4">
-                <label for="uniprinc" class="form-label">Unidade Principal</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    id="uniprinc"
-                    name="uniprinc"
-                    value="{{ $user->unid_princ ?? '' }}"
-                    readonly
-                />
-            </div>
-            
-            <div class="col-md-4">
-                <label for="uniloc" class="form-label">Unidade de Lotação</label>
-                <input
-                    type="text"
-                    class="form-control"
-                    id="uniloc"
-                    name="uniloc"
-                    value="{{ $user->unid_lot ?? '' }}"
-                    readonly
-                />
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="uniprinc" class="form-label">Unidade Principal</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="uniprinc"
+                        name="uniprinc"
+                        value="{{ $user->unid_princ ?? '' }}"
+                        readonly
+                    />
+                </div>
             </div>
         </div>
         
         <div class="row g-3 mt-2">
-            <div class="col-md-4">
-                <label for="priclassif" class="form-label">Classificação (Prioridade pela ITLF)</label>
-                <select class="form-select" id="priclassif" name="priclassif">
-                    <option value="A" {{ ($user->priorit ?? 'B') == 'A' ? 'selected' : '' }}>Alta</option>
-                    <option value="M" {{ ($user->priorit ?? 'B') == 'M' ? 'selected' : '' }}>Média</option>
-                    <option value="B" {{ ($user->priorit ?? 'B') == 'B' ? 'selected' : '' }}>Baixa</option>
-                </select>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="uniloc" class="form-label">Unidade de Lotação</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="uniloc"
+                        name="uniloc"
+                        value="{{ $user->unid_lot ?? '' }}"
+                        readonly
+                    />
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="priclassif" class="form-label">Classificação (Prioridade pela ITLF)</label>
+                    <select class="form-select" id="priclassif" name="priclassif">
+                        <option value="A" {{ ($user->priorit ?? 'B') == 'A' ? 'selected' : '' }}>Alta</option>
+                        <option value="M" {{ ($user->priorit ?? 'B') == 'M' ? 'selected' : '' }}>Média</option>
+                        <option value="B" {{ ($user->priorit ?? 'B') == 'B' ? 'selected' : '' }}>Baixa</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
