@@ -1,53 +1,21 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\EpiController;
 
 Route::get('/', function () {
-    $postgrad_choices = DB::table('postgrad_ref')->pluck('label', 'code')->toArray();
-    $choices_sitfunc = DB::table('sitfunc_ref')->pluck('label', 'code')->toArray();
-    
-    // Buscar primeiro usuário do banco (para teste) - você pode trocar por auth depois
-    $user = DB::table('usuarios')->first();
-    
-    // Se não houver usuário, criar um objeto vazio
-    if (!$user) {
-        $user = (object)[
-            'numbm' => '',
-            'nome' => 'Usuário Teste',
-            'nome_completo' => '',
-            'postgrad_code' => '',
-            'date_include' => '',
-            'tempo_servico' => '0 anos',
-            'status_code' => '',
-            'sitfunc_code' => '',
-            'sexo_code' => 'M',
-            'cargo_code' => 'U',
-            'emailfunc' => '',
-            'gto' => '',
-            'ativ_esp' => '',
-            'list_ativ_esp' => '',
-            'cob' => '',
-            'unid_princ' => '',
-            'unid_lot' => '',
-            'priorit' => 'B',
-        ];
-    }
-    
-    return view('welcome', compact('user', 'postgrad_choices', 'choices_sitfunc'));
+    return view('welcome');
 })->name('home');
 
-Route::get('/ciurb', function () {
-    return view('welcome');
-})->name('ciurb');
+// Rotas de EPIs
+Route::get('/ciurb', [EpiController::class, 'ciurb'])->name('ciurb');
+Route::post('/ciurb/update', [EpiController::class, 'updateCiurb'])->name('ciurb.update');
 
-Route::get('/multimissao', function () {
-    return view('welcome');
-})->name('multimissao');
+Route::get('/multimissao', [EpiController::class, 'multimissao'])->name('multimissao');
+Route::post('/multimissao/update', [EpiController::class, 'updateMultimissao'])->name('multimissao.update');
 
-Route::get('/salvamento', function () {
-    return view('welcome');
-})->name('salvamento');
+Route::get('/salvamento', [EpiController::class, 'salvamento'])->name('salvamento');
+Route::post('/salvamento/update', [EpiController::class, 'updateSalvamento'])->name('salvamento.update');
 
 Route::get('/motorresgate', function () {
     return view('welcome');

@@ -10,6 +10,9 @@
     <link rel="preload" href="{{ asset('css/app.css') }}" as="style" onload="this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="{{ asset('css/app.css') }}"></noscript>
 
+    {{-- Bootstrap CSS --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         .topbar__actions {
             margin-left: auto;
@@ -180,7 +183,7 @@
             </div>
 
             <div class="topbar__actions">
-                @if(isset($user) && $user->nome ?? false)
+                @if(isset($user) && isset($user->nome))
                     <div class="user-info">
                         <div class="user-info__name">{{ $user->nome ?? 'Usuário' }}</div>
                         <div class="user-info__role">
@@ -240,6 +243,9 @@
             <div class="credits">Designed by Cleyton Batista</div>
         </footer>
     </div>
+
+    {{-- Bootstrap JS Bundle (inclui Popper) --}}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     {{-- JS principal (defer para não bloquear renderização) --}}
     <script defer src="{{ asset('js/app.js') }}"></script>
