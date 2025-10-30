@@ -6,67 +6,35 @@
     <title>@yield('title', 'Gestão de EPI')</title>
     <meta name="theme-color" content="#202122" />
 
+    {{-- Bootstrap CSS --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     {{-- CSS principal (preload para performance) --}}
     <link rel="preload" href="{{ asset('css/app.css') }}" as="style" onload="this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="{{ asset('css/app.css') }}"></noscript>
-
-    {{-- Bootstrap CSS --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        .topbar__actions {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-        }
-        
-        .user-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 0.3rem;
-            padding: 0.5rem 1rem;
-        }
-        
-        .user-info__name {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #2c3e50;
-        }
-        
-        .user-info__role {
-            display: flex;
-            align-items: center;
-        }
-        
-        .badge {
-            display: inline-block;
-            padding: 0.2rem 0.6rem;
-            border-radius: 10px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-        
-        .badge-admin {
-            background: #dc3545;
-            color: white;
-            box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
-        }
-        
-        .badge-user {
-            background: #007bff;
-            color: white;
-            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
-        }
-    </style>
 
     {{-- Espaço para CSS extra de páginas --}}
     @stack('styles')
 
     {{-- Favicon (ajuste seus caminhos) --}}
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    
+    {{-- Correção de conflitos entre Bootstrap e CSS customizado --}}
+    <style>
+        .sidebar .nav {
+            display: block !important;
+            flex-direction: column !important;
+        }
+        .sidebar .nav__item {
+            display: block !important;
+            width: 100% !important;
+        }
+        .sidebar .nav__link,
+        .sidebar .nav__summary {
+            display: flex !important;
+            width: 100% !important;
+        }
+    </style>
 </head>
 <body class="no-js">
     <div class="app-shell">
@@ -170,6 +138,16 @@
                     </li>
                 </ul>
             </nav>
+            
+            <div class="sidebar__footer" style="margin-top:auto;padding:1rem 0 0 0;">
+                <form method="POST" action="{{ route('logout') }}" style="width:100%;">
+                    @csrf
+                    <button type="submit" class="nav__link nav__logout" style="width:100%;display:flex;align-items:center;gap:0.5em;">
+                        <span class="nav__icon" aria-hidden="true">🚪</span>
+                        <span>Sair</span>
+                    </button>
+                </form>
+            </div>
         </aside>
 
         {{-- TOPBAR --}}
@@ -183,18 +161,29 @@
             </div>
 
             <div class="topbar__actions">
-                @if(isset($user) && isset($user->nome))
-                    <div class="user-info">
-                        <div class="user-info__name">{{ $user->nome ?? 'Usuário' }}</div>
-                        <div class="user-info__role">
-                            @if(($user->cargo_code ?? 'U') === 'A')
-                                <span class="badge badge-admin">Administrador</span>
-                            @else
-                                <span class="badge badge-user">Usuário</span>
-                            @endif
+                @auth
+                    <div class="user">
+                        <button class="user__btn" id="userMenuBtn" aria-haspopup="menu" aria-expanded="false">
+                            <span class="user__name">{{ Auth::user()->nome ?? 'Nome não encontrado' }}</span>
+                            <span class="chev chev--sm" aria-hidden="true"></span>
+                        </button>
+                        <div class="user__menu" id="userMenu" role="menu" aria-labelledby="userMenuBtn" hidden>
+                            <div class="user__meta">
+                                <strong>{{ Auth::user()->nome ?? 'Nome não encontrado' }}</strong>
+                                <span>{{ Auth::user()->cargo_code === 'A' ? 'Administrador' : 'Usuário' }}</span>
+                            </div>
+                            <hr class="sep">
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="user__logout" role="menuitem">Sair</button>
+                            </form>
                         </div>
                     </div>
-                @endif
+                @else
+                    <div class="user">
+                        <span class="user__name" style="color: #999;">Não autenticado</span>
+                    </div>
+                @endauth
             </div>
         </header>
 
@@ -244,9 +233,9 @@
         </footer>
     </div>
 
-    {{-- Bootstrap JS Bundle (inclui Popper) --}}
+    {{-- Bootstrap JS --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    
     {{-- JS principal (defer para não bloquear renderização) --}}
     <script defer src="{{ asset('js/app.js') }}"></script>
     @stack('scripts')
